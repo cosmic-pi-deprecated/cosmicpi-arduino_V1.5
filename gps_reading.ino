@@ -1,8 +1,4 @@
 
-// This is the nmea data string from the GPS chip
-#define GPS_STRING_LEN 256
-static char gps_string[GPS_STRING_LEN + 1];
-
 // WARNING: One up the spout !!
 // The GPS chip puts the next nmea string in its output buffer
 // only if its been read, IE its empty.
