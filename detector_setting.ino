@@ -1,23 +1,26 @@
 #include <Wire.h>
 
+// configure these to configure the detector
+static const int HV_DEFAULT = 104;
+static const int DEFAULT_DAC_THRESH = 1600;
+
+// other constants
+static const int HV_MAX = 89;
+static const int HV_MIN = 255;
+static const int DEFAULT_THRESH = 100;
+static const bool USE_DAC = true;
+
+//set up the pins to remap SPI by hand
+static const int num_devices = 2;
+static const int SS_pin[num_devices] = {14, 15};
+static const int SCK_pin = 17;
+//static const int MISO_pin = 22;
+static const int MOSI_pin = 16;
+
+// I2C adress pins
 #define MAX5387_PA0_pin A9
 #define MAX5387_PA1_pin A10
 #define MAX5387_PA2_pin A11
-
-const int HV_MAX = 89;
-const int HV_MIN = 255;
-const int HV_DEFAULT = 104;
-const int DEFAULT_THRESH = 100;
-//const int DEFAULT_DAC_THRESH = 1344;
-const int DEFAULT_DAC_THRESH = 1600;
-const bool USE_DAC = true;
-
-//set up the pins to remap SPI by hand
-const int num_devices = 2;
-const int SS_pin[num_devices] = {14, 15};
-const int SCK_pin = 17;
-//const int MISO_pin = 22;
-const int MOSI_pin = 16;
 
 byte thresh1;
 byte thresh2;
