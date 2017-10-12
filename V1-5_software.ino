@@ -270,8 +270,10 @@ void setup() {
   }
 
   // The two leds on the front pannel for PPS and Event
-  pinMode(EVT_PIN, OUTPUT);       // Pin for the cosmic ray event 
-  pinMode(PPS_PIN, OUTPUT);       // Pin for the PPS (LED pin)
+  if (leds_on) {
+    pinMode(EVT_PIN, OUTPUT);       // Pin for the cosmic ray event 
+    pinMode(PPS_PIN, OUTPUT);       // Pin for the PPS (LED pin)
+  }
 
   TimersStart();  // Start timers
   target_mills = millis() + 1010; // backup PPS
@@ -323,7 +325,9 @@ void loop() {
   
   // reset event LED when enough time has passed
   if (millis() >= (last_event_LED + event_LED_time)){
-    digitalWrite(EVT_PIN, LOW);
+    if (leds_on) {
+      digitalWrite(EVT_PIN, LOW);
+    }
   }
 
   // if no pps recieved
@@ -331,7 +335,9 @@ void loop() {
     target_mills = millis() + 1000;
     // reset pps_millis
     pps_micros = micros();
-    digitalWrite(PPS_PIN, !digitalRead(PPS_PIN));
+    if (leds_on) {
+      digitalWrite(PPS_PIN, !digitalRead(PPS_PIN));
+    }
     gps_ok = false; 
     PPL_PPS_combinedHandling();
   }
