@@ -2,12 +2,15 @@
 #include "asyncSerial.h"
 #include <Wire.h>
 
+static const int SERIAL_BAUD_RATE = 115200;
+//static const int SERIAL_BAUD_RATE = 9600;
+static const int GPS_BAUD_RATE = 9600;
 #define SERIAL_BAUD_RATE 115200   // Serial baud rate 
 //#define SERIAL_BAUD_RATE 9600   // Serial baud rate 
 #define GPS_BAUD_RATE 9600  // GPS and Serial1 line
 
 // simulate events
-bool simulateEvents = false;
+static bool simulateEvents = false;
 unsigned long  nextSimEvent = 0;
 
 // start our async serial connection for global use
@@ -20,12 +23,12 @@ AsyncSerial *aSer;
 #include "sensors.h"
 Sensors sensors(aSer);
 
-// Define some output debug pins to monitor whats going on via an oscilloscope
+// LED pins
 #define PPS_PIN 12      // PPS (Pulse Per Second) and LED
 #define EVT_PIN 11      // Cosmic ray event detected
 
 // Leds  flag
-int leds_on = 1;
+bool leds_on = true;
 
 // time in ms between sensor updates
 unsigned long distanceSensorUpdatePPS = 200; // the sensor update should always print inbetween the PPS, to avoid problems with the serial pipe from the GPS
@@ -241,6 +244,18 @@ void TC6_Handler() {
 }
 
 
+// Push the GPS state when we recieve a PPS or PPL
+void printPPS() {
+  sprintf(txt,"PPS: GPS lock:%d;\n", gps_ok);
+  aSer->print(txt);
+}
+
+// what must be done every second anyways
+void PPL_PPS_combinedHandling(){
+  printPPS();
+  // set the time for the next sensor update
+  nextSensorUpdate = target_mills - distanceSensorUpdatePPS;
+}
 
 
 // ------------------------- Arudino Functions
@@ -289,17 +304,6 @@ void setup() {
   aSer->print("INFO: Running\n");
 }
 
-// Push "running for" time in hrs, mins and secs
-void printPPS() {
-  sprintf(txt,"PPS: GPS lock:%d;\n", gps_ok);
-  aSer->print(txt);
-}
-
-void PPL_PPS_combinedHandling(){
-  printPPS();
-  // set the time for the next sensor update
-  nextSensorUpdate = target_mills - distanceSensorUpdatePPS;
-}
 
 // Arduino main loop does all the user space work
 
@@ -313,7 +317,7 @@ void loop() {
   if (simulateEvents) {
     if (millis() >= nextSimEvent){
       TC6_Handler();
-      nextSimEvent = millis() + random(300, 2000);
+      nextSimEvent = millis() + random(100, 2000);
     }
   }
   
