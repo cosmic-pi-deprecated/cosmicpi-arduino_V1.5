@@ -247,7 +247,7 @@ void printPPS() {
   aSer->print(txt);
 }
 
-// what must be done every second anyways
+// Things that need handling on PPS and PLL, but are non time critical
 void PPL_PPS_combinedHandling(){
   printPPS();
   // set the time for the next sensor update
@@ -308,23 +308,10 @@ void setup() {
 
 void loop() {
 
+  // on a PPS from the GPS
   if (pps_recieved){
     PPL_PPS_combinedHandling();
     pps_recieved = false;
-  }
-
-  if (simulateEvents) {
-    if (millis() >= nextSimEvent){
-      TC6_Handler();
-      nextSimEvent = millis() + random(100, 2000);
-    }
-  }
-  
-  // reset event LED when enough time has passed
-  if (millis() >= (last_event_LED + event_LED_time)){
-    if (leds_on) {
-      digitalWrite(EVT_PIN, LOW);
-    }
   }
 
   // if no pps recieved
@@ -339,6 +326,22 @@ void loop() {
     PPL_PPS_combinedHandling();
   }
 
+  // simulate an interrupt if we want to simulate events
+  if (simulateEvents) {
+    if (millis() >= nextSimEvent){
+      TC6_Handler();
+      nextSimEvent = millis() + random(100, 2000);
+    }
+  }
+  
+  // reset event LED when enough time has passed
+  if (millis() >= (last_event_LED + event_LED_time)){
+    if (leds_on) {
+      digitalWrite(EVT_PIN, LOW);
+    }
+  }
+
+  
   // print out sensor updates
   if (millis() >= (nextSensorUpdate)){
     sensors.printAll();

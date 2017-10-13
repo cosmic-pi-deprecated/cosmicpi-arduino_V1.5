@@ -25,6 +25,7 @@ static const int MOSI_pin = 16;
 byte thresh1;
 byte thresh2;
 
+// initilizes the detector with default values
 void setupDetector(){
   // setup pins
   detecSetPinModes();
@@ -42,8 +43,9 @@ void setupDetector(){
 }
 
 
+// sets pin modes needed for the detector
 void detecSetPinModes(){
-  //setup analogue writemode
+  //setup analog writemode
   analogWriteResolution(12);
   // I2C adress pins for the MAX5387
   pinMode(MAX5387_PA0_pin, OUTPUT);
@@ -60,12 +62,15 @@ void detecSetPinModes(){
   pinMode(MOSI_pin, OUTPUT);
 }
 
+
+// sets pins that don't need changing (ever)
 void detcSetConstantPins(){
   // I2C adress pins for the MAX5387
   digitalWrite(MAX5387_PA0_pin, LOW);//configure the address of the MAX5387 pot
   digitalWrite(MAX5387_PA1_pin, LOW);//configure the address of the MAX5387 pot
   digitalWrite(MAX5387_PA2_pin, LOW);//configure the address of the MAX5387 pot
 }
+
 
 // this function sets the thresholds for the MAX5387
 // 1 is the first channel, 2 the second and 3 sets both at the same time
@@ -108,9 +113,10 @@ void setThreshold(int pot_channel, int value){
 }
 
 
+// set the two HV supplies
 byte setHV(byte _send)  // This function is what bitbangs the data
 {
-  sprintf(txt,"Setting HV 1&2 to: %d\n", _send);
+  sprintf(txt,"INFO: Setting HV 1&2 to: %d\n", _send);
   aSer->print(txt);
   //reception isn't implemented in this version. 
   //byte _receive = 0;
