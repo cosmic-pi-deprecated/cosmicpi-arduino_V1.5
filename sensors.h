@@ -10,8 +10,6 @@
 // HTU21D lib from here: https://github.com/sparkfun/SparkFun_HTU21D_Breakout_Arduino_Library
 #include "src/SparkFunHTU21D.h"
 
-#define TXTLEN 256
-
 class Sensors {
   // object for the pressure sensor
   LPS baro;
@@ -27,6 +25,7 @@ class Sensors {
   
   // cute class for printing and the needed char array
   AsyncSerial *aSer;
+  static const int TXTLEN = 512;
   char txt[TXTLEN];                // For writing to serial
   
   public:

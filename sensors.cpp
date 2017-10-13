@@ -115,9 +115,9 @@ void Sensors::printAll(){
   printTempAvg();
 }
 
-#define GEARTH 9.80665
+static const double GEARTH = 9.80665;
 // normaly there is no - in ACL_FS, but the Accel is on upwards down, so it was necessary to get correct values
-#define ACL_FS -2.0 // +-2g 16 bit 2's compliment
+static const double ACL_FS = -2.0;  // +-2g 16 bit 2's compliment
 
 // Convert to meters per sec per sec
 

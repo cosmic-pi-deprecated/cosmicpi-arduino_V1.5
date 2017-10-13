@@ -2,12 +2,9 @@
 #include "asyncSerial.h"
 #include <Wire.h>
 
-static const int SERIAL_BAUD_RATE = 115200;
-//static const int SERIAL_BAUD_RATE = 9600;
-static const int GPS_BAUD_RATE = 9600;
-#define SERIAL_BAUD_RATE 115200   // Serial baud rate 
-//#define SERIAL_BAUD_RATE 9600   // Serial baud rate 
-#define GPS_BAUD_RATE 9600  // GPS and Serial1 line
+static const int SERIAL_BAUD_RATE = 115200;   // Serial baud rate
+//static const int SERIAL_BAUD_RATE = 9600;   // Serial baud rate
+static const int GPS_BAUD_RATE = 9600;        // GPS and Serial1 line
 
 // simulate events
 static bool simulateEvents = false;
@@ -36,7 +33,7 @@ unsigned long  nextSensorUpdate = 0;
 
 
 // for serial printing
-#define TXTLEN 512
+static const int TXTLEN = 512;
 static char txt[TXTLEN];                // For writing to serial  
 
 static uint32_t displ = 0;      // Display values in loop
