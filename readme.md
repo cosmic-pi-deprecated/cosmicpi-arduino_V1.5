@@ -1,20 +1,26 @@
 # CosmicPi V1.5 Arduino DUE software
 
-This is the Arduino DUE software running on the CosmicPi V1.5
+This is the Arduino DUE software running on the CosmicPi V1.5.
+This software is designed to work in a plug and play fashion, no interaction is required.
 
-## Meaning of the LEDs
+### Meaning of the LEDs
 *	Lower LED (green): Power and GPS
 	*	Solid: Power, but no GPS lock
 	*	Blinking: Power and GPS lock
 *	Upper LED (red): Event
-	*	Flash: One Event was registered
-
+	*	Flash: An Event has been registered
 
 ## Features
 *	Set up the detector with default values
 *	Send events from the detector via serial
 *	Send data from all sensors on the board via serial
 *	Configure the on board GPS and pipe it's data to serial
+
+## ToDo before release
+*	The timer needs a rework, its current implementation is imprecise
+*	The detector should be able to calibrate it's parameters automatically
+	*	High voltage
+	*	Thresholds
 
 ## Installation
 For regular users of the CosmicPi V1.5 this should be taken care of automatically by the software on the RaspberryPi.
@@ -31,8 +37,5 @@ For everybody interested in looking into developing this oneself:
 ## Usage
 As soon as the CosmicPi is connected you can open the software of your choice for monitoring serial data. Open the Arduinos serial port with a baudrate of 115200.
 This firmware is designed to be a plug and play firmware. 
-It will only send data. It will not accept inputs. What data is send is defined [here](https://github.com/CosmicPi/cosmicpi-rpi_V1.5/blob/master/documentation/CosmicPi_V15_serial_comm.txt).
+It will only send data. It will not accept inputs. What data is sent is defined [here](https://github.com/CosmicPi/cosmicpi-rpi_V1.5/blob/master/documentation/CosmicPi_V15_serial_comm.txt).
 
-## ToDo
-*	The timer needs a rework, its current implementation is imprecise
-*	The detector should be able to calibrate itself automatically
