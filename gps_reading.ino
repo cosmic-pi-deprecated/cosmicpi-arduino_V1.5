@@ -18,16 +18,24 @@ boolean pipeGPS() {
 
 void GpsSetup() {
 
+// definitions for different outputs
+// only one of these strings can be used at a time
+// otherwise they will overwrite each other
+// for more information take a look at the QUECTEL L70 protocoll specification: http://docs-europe.electrocomponents.com/webdocs/147d/0900766b8147dbdd.pdf
 #define RMCGGA    "$PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*28" // RCM & GGA
-#define RMCZDA    "$PMTK314,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0*29" // ZDA
-#define GGA_AND_ZDA    "$PMTK314,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0*28" // GGA & ZDA
+#define ZDA    "$PMTK314,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0*29" // ZDA
+#define GGAZDA    "$PMTK314,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0*28" // GGA & ZDA
 #define GGA    "$PMTK314,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29" // GGA
+
+// gets the firmware version 
 #define FMWVERS   "$PMTK605*31"             // PMTK_Q_RELEASE
+// Sets the update intervall
 #define NORMAL    "$PMTK220,1000*1F"          // PMTK_SET_NMEA_UPDATE_1HZ
+// disables updates for the antenna status (only Adafruit ultimate GPS?)
 #define NOANTENNA "$PGCMD,33,0*6D"          // PGCMD_NOAN
 
   Serial1.println(NOANTENNA);
-  Serial1.println(GGA_AND_ZDA);
+  Serial1.println(GGAZDA);
   Serial1.println(NORMAL);
   Serial1.println(FMWVERS);
 }
