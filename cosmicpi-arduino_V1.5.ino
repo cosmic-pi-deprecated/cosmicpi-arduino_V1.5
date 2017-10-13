@@ -319,8 +319,9 @@ void loop() {
     target_mills = millis() + 1000;
     // reset pps_millis
     pps_micros = micros();
+    // while we have no pps we will keep the LED solid
     if (leds_on) {
-      digitalWrite(PPS_PIN, !digitalRead(PPS_PIN));
+      digitalWrite(PPS_PIN, HIGH);
     }
     gps_ok = false; 
     PPL_PPS_combinedHandling();
