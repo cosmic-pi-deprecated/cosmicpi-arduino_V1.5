@@ -3,17 +3,16 @@
 #include <Wire.h>
 
 static const int SERIAL_BAUD_RATE = 115200;   // Serial baud rate
-//static const int SERIAL_BAUD_RATE = 9600;   // Serial baud rate
 static const int GPS_BAUD_RATE = 9600;        // GPS and Serial1 line
 
 // simulate events
-static bool simulateEvents = false;
+static bool simulateEvents = true;
 unsigned long  nextSimEvent = 0;
 
 // start our async serial connection for global use
 // it would normally work just fine as an instance
 // but I want to pass around the pointer to different classes
-// to make sure that only one instance is ever created and that's here
+// to make sure that only one instance is ever used
 AsyncSerial *aSer;
 
 // sensors for global use
@@ -27,19 +26,22 @@ Sensors sensors(aSer);
 // Leds  flag
 bool leds_on = true;
 
-// time in ms between sensor updates
-unsigned long distanceSensorUpdatePPS = 200; // the sensor update should always print inbetween the PPS, to avoid problems with the serial pipe from the GPS
+// time to print a sensor update (in ms before a PPL)
+// the sensor update should always print inbetween the PPS, to avoid problems with the serial pipe from the GPS
+static unsigned long distanceSensorUpdatePPS = 200;
 unsigned long  nextSensorUpdate = 0;
 
+// How long the event LED should light up (in ms)
+static int event_LED_time = 15;
 
-// for serial printing
+
+// string used for passing data to our asynchronous serial print class
 static const int TXTLEN = 512;
 static char txt[TXTLEN];                // For writing to serial  
 
 static uint32_t displ = 0;      // Display values in loop
 
 // Timer registers REGA....
-
 static uint32_t rega1, stsr1 = 0;
 static uint32_t stsr2 = 0;
 
@@ -48,20 +50,18 @@ boolean pll_flag = false;
 long eventCount = 0;
 unsigned long pps_micros = 0;
 unsigned long target_mills = millis() + 1030;
-static int event_LED_time = 15;
 unsigned long last_event_LED = 0;
 
 #define FREQ 42000000                   // Clock frequency
 #define MFRQ 40000000                   // Sanity check frequency value
 
 // Timer chip interrupt handlers try to get time stamps to within 4 system clock ticks
-
 static uint32_t rega0 = FREQ,   // RA reg
                 stsr0 = 0,      // Interrupt status register
                 ppcnt = 0,      // PPS count
                 delcn = 0;      // Synthetic PPS ms
 
-// GPS and time
+// GPS and time flags
 boolean gps_ok = false;         // Chip OK flag
 boolean pps_recieved = false;
 
