@@ -226,6 +226,10 @@ void TC6_Handler() {
   eventCount++;
   sprintf(txt,"Event: sub second micros:%d; Event Count:%d\n", us, eventCount);
   aSer->print(txt);
+  // send the event twice to make sure it is actually recieved without problems
+  // the reading software must be tuned to not double count this
+  sprintf(txt,"Event: sub second micros:%d; Event Count:%d\n", us, eventCount);
+  aSer->print(txt);
 
   // turn on LED, it will be turned off in the main loop
   last_event_LED = millis();
@@ -331,7 +335,7 @@ void loop() {
   if (simulateEvents) {
     if (millis() >= nextSimEvent){
       TC6_Handler();
-      nextSimEvent = millis() + random(100, 2000);
+      nextSimEvent = millis() + random(100, 1000);
     }
   }
   
