@@ -6,7 +6,7 @@ static const int SERIAL_BAUD_RATE = 115200;   // Serial baud rate
 static const int GPS_BAUD_RATE = 9600;        // GPS and Serial1 line
 
 // simulate events
-static bool simulateEvents = true;
+static bool simulateEvents = false;
 unsigned long  nextSimEvent = 0;
 
 // start our async serial connection for global use
