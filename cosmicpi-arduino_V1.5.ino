@@ -6,8 +6,12 @@ static const int SERIAL_BAUD_RATE = 115200;   // Serial baud rate
 static const int GPS_BAUD_RATE = 9600;        // GPS and Serial1 line
 
 // simulate events
-static bool simulateEvents = false;
+static const bool simulateEvents = false;
 unsigned long  nextSimEvent = 0;
+
+// enable gps and sensor output
+static const bool enableSensorOutput = true;
+static const bool enableGPSPipe = true;
 
 // start our async serial connection for global use
 // it would normally work just fine as an instance
@@ -228,8 +232,8 @@ void TC6_Handler() {
   aSer->print(txt);
   // send the event twice to make sure it is actually recieved without problems
   // the reading software must be tuned to not double count this
-  sprintf(txt,"Event: sub second micros:%d; Event Count:%d\n", us, eventCount);
-  aSer->print(txt);
+  //sprintf(txt,"Event: sub second micros:%d; Event Count:%d\n", us, eventCount);
+  //aSer->print(txt);
 
   // turn on LED, it will be turned off in the main loop
   last_event_LED = millis();
@@ -334,6 +338,7 @@ void loop() {
   // simulate an interrupt if we want to simulate events
   if (simulateEvents) {
     if (millis() >= nextSimEvent){
+      aSer->print("INFO: Simulating next event\n");
       TC6_Handler();
       nextSimEvent = millis() + random(100, 1000);
     }
@@ -345,17 +350,20 @@ void loop() {
       digitalWrite(EVT_PIN, LOW);
     }
   }
-
   
   // print out sensor updates
-  if (millis() >= (nextSensorUpdate)){
-    sensors.printAll();
-    nextSensorUpdate += 1000;
+  if (enableSensorOutput){
+    if (millis() >= (nextSensorUpdate)){
+      sensors.printAll();
+      nextSensorUpdate += 1000;
+    }
   }
 
   // pipe GPS if it's available
-  pipeGPS();
-
+  if (enableGPSPipe){
+    pipeGPS();
+  }
+  
   aSer->PutChar();      // Print one character per loop !!!
 }
 
