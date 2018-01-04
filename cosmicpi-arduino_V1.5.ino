@@ -2,7 +2,7 @@
 #include "asyncSerial.h"
 #include <Wire.h>
 
-static const int SERIAL_BAUD_RATE = 115200;   // Serial baud rate
+static const int SERIAL_BAUD_RATE = 19200;   // Serial baud rate for version 1.5 production
 static const int GPS_BAUD_RATE = 9600;        // GPS and Serial1 line
 
 // simulate events
