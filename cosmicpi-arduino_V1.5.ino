@@ -24,8 +24,8 @@ AsyncSerial *aSer;
 Sensors sensors(aSer);
 
 // LED pins
-#define PPS_PIN 12      // PPS (Pulse Per Second) and LED
-#define EVT_PIN 11      // Cosmic ray event detected
+#define PPS_PIN 11      // PPS (Pulse Per Second) and LED
+#define EVT_PIN 12      // Cosmic ray event detected
 
 // Leds  flag
 bool leds_on = true;
