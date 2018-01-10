@@ -8,10 +8,11 @@
 
 boolean pipeGPS() {
   while (Serial1.available()) {
-    char c[1];
-    c[0] = Serial1.read();
-    aSer->print(c); 
-  }
+    char c[2];
+    c[0] = Serial1.read(); 
+    c[1]='\0'; //null character for termination required.
+    aSer->print(c);
+    }
 }
 
 // GPS setup
