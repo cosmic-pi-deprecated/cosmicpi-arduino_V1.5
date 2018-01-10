@@ -1,8 +1,8 @@
 #include <Wire.h>
 
 // configure these to configure the detector
-static const int HV_DEFAULT = 104;
-static const int DEFAULT_DAC_THRESH = 1200; //modification for V1.5 production batch
+static const int HV_DEFAULT = 124;
+static const int DEFAULT_DAC_THRESH = 1150; //modification for V1.5 production batch
 
 // other constants
 static const int HV_MAX = 89;
