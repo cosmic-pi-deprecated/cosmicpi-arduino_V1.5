@@ -38,6 +38,8 @@ void setupDetector(){
     setThreshold(3, DEFAULT_THRESH);
   }
   setHV(HV_DEFAULT);
+  sprintf(txt,"Detector threshold: %d\n", DEFAULT_DAC_THRESH);
+  aSer->print(txt);
   sprintf(txt,"Detector setup finished\n");
   aSer->print(txt);
 }
