@@ -2,7 +2,7 @@
 
 // configure these to configure the detector
 static const int HV_DEFAULT = 124;
-static const int DEFAULT_DAC_THRESH = 1150; //modification for V1.5 production batch
+static const int DEFAULT_DAC_THRESH = 1120; //modification for V1.5 production batch, this is a generic setting to be tuned by users
 
 // other constants
 static const int HV_MAX = 89;
