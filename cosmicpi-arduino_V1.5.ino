@@ -50,11 +50,17 @@ static uint32_t rega1, stsr1 = 0;
 static uint32_t stsr2 = 0;
 
 boolean pll_flag = false;
+boolean pll_pulse = false;
 
 long eventCount = 0;
 unsigned long pps_micros = 0;
 unsigned long target_mills = millis() + 1030;
 unsigned long last_event_LED = 0;
+int eventstack = 0;
+#define maxevent 100 //we don't expect more events than this
+unsigned long evttime [maxevent];
+
+
 
 #define FREQ 42000000                   // Clock frequency
 #define MFRQ 40000000                   // Sanity check frequency value
@@ -122,6 +128,10 @@ void TimersStart() {
         TC_SetRC(TC1, 0, FREQ);                         // One second approx initial PLL value
         TC_Start(TC1, 0);                               // Start timer running
 
+        TC1->TC_CHANNEL[0].TC_IER =  TC_IER_CPCS;  // Enable the C register compare interrupt
+        TC1->TC_CHANNEL[0].TC_IDR = ~TC_IER_CPCS; // and disable the rest
+        NVIC_EnableIRQ(TC3_IRQn);     // Enable interrupt handler for channel 0
+
         // Timer block 2 channel 0 is connected to the RAY event
         // It is kept in phase by the PPS comming from TC0 when the PPS arrives
         // or from TC1 when the PLL is active (This is the so called software diode logic)
@@ -162,11 +172,12 @@ uint32_t dead_dely = 0; // Amout of time lost in dead time
 // Handle the PPS interrupt in counter block 0 ISR
 
 void TC0_Handler() {
+  //aSer->print("TC0debug\n");
 
         // reset pps_millis
-        pps_micros = micros();
+        //pps_micros = micros();
         // disable our backup "timer"
-        target_mills = millis() + 1010;
+        //target_mills = millis() + 1010;
 
         // In principal we could connect a diode
         // to pass on the PPS to counter blocks 1 & 2. However for some unknown
@@ -199,22 +210,28 @@ void TC0_Handler() {
         if (leds_on) {
           digitalWrite(PPS_PIN, !digitalRead(PPS_PIN));   // Toggle led
         }
-}
+
+        displ = 1; 
+
+        }
 
 // Handle PLL interrupts
 // When/If the PPS goes missing due to a lost lock we carry on with the last measured
 // value for the second from TC0
 
 void TC3_Handler() {
+  
+  //aSer->print("TC3debug\n");
 
         stsr2 = TC_GetStatus(TC1, 0);           // Read status and clear interrupt
 
         if (pll_flag == false) {                // Only take over when no PPS
-
+  //aSer->print("PLL FALSE\n");
                 TC2->TC_CHANNEL[0].TC_CCR = TC_CCR_SWTRG; // Forward PPS to counter block 2
                 ppcnt++;                                // PPS count
                 displ = 1;                              // Display stuff in the loop
                 gps_ok = false;                         // PPS missing
+                pll_pulse = true;
         }
         pll_flag = false;                               // Take over until PPS comes back
 }
@@ -224,12 +241,15 @@ void TC3_Handler() {
 // LOR means Logical inclusive OR
 // Now we are using the software diode implementation
 
-void TC6_Handler() {
 
-  unsigned long us = micros() - pps_micros;
-  eventCount++;
-  sprintf(txt,"Event: sub second micros:%d; Event Count:%d\n", us, eventCount);
-  aSer->print(txt);
+void TC6_Handler() {
+  //this is the event interrupt
+
+  //aSer->print("TC6 event debug\n");
+
+  //unsigned long us = micros() - pps_micros;
+  
+  
   // send the event twice to make sure it is actually recieved without problems
   // the reading software must be tuned to not double count this
   //sprintf(txt,"Event: sub second micros:%d; Event Count:%d\n", us, eventCount);
@@ -244,9 +264,22 @@ void TC6_Handler() {
   
   // Then unblock
         rega1 = TC2->TC_CHANNEL[0].TC_RA;       // Read the RA on channel 1 (PPS period)
+  if (eventstack > 0){
+  evttime[eventstack] = rega1+evttime[eventstack-1];
+  }
+  else
+  {
+  evttime[eventstack] = rega1;
+  }
+  eventCount++;
+  eventstack++; //increment the event stack for this second
+
+        
         stsr1 = TC_GetStatus(TC2, 0);           // Read status clear load bits
 
+
 }
+
 
 
 // Push the GPS state when we recieve a PPS or PPL
@@ -281,7 +314,7 @@ void setup() {
   }
 
   TimersStart();  // Start timers
-  target_mills = millis() + 1010; // backup PPS
+  //target_mills = millis() + 1010; // backup PPS
 
   aSer = new AsyncSerial(SERIAL_BAUD_RATE); // Start the serial line
   // start the GPS
@@ -315,13 +348,14 @@ void setup() {
 // Arduino main loop does all the user space work
 
 void loop() {
-
+/*
   // on a PPS from the GPS
   if (pps_recieved){
     PPL_PPS_combinedHandling();
     pps_recieved = false;
   }
-
+  */
+/*
   // if no pps recieved
   if (millis() >= target_mills){
     target_mills = millis() + 1000;
@@ -343,6 +377,7 @@ void loop() {
       nextSimEvent = millis() + random(100, 1000);
     }
   }
+  */
   
   // reset event LED when enough time has passed
   if (millis() >= (last_event_LED + event_LED_time)){
@@ -358,7 +393,29 @@ void loop() {
       nextSensorUpdate += 1000;
     }
   }
+ //print out the events here
+  if (displ>0){
+        for (int i=0; i < eventstack; i++){
+        if (gps_ok) {
+        sprintf(txt,"Event: sub second micros:%d/%d; Event Count:%d\n", evttime[i], rega0, (eventCount-eventstack+i));
+        }
+        else {
+        sprintf(txt,"Event: sub second micros:%d/%d; Event Count:%d\n", evttime[i], FREQ, (eventCount-eventstack+i));
+        }
+        aSer->print(txt);
+        }
 
+        eventstack=0;//reset the event stack for the next second.
+        displ=0;
+  }
+
+  if ((pll_pulse)+(pps_recieved))
+  {
+    printPPS();
+    pps_recieved = false;
+    pll_pulse = false;
+  }
+     
   // pipe GPS if it's available
   if (enableGPSPipe){
     pipeGPS();
@@ -366,6 +423,5 @@ void loop() {
   
   aSer->PutChar();      // Print one character per loop !!!
 }
-
 
 
