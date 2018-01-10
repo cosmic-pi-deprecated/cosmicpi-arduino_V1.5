@@ -39,7 +39,7 @@ For everybody interested in looking into developing this oneself:
 
 
 ## Usage
-As soon as the CosmicPi is connected you can open the software of your choice for monitoring serial data. Open the Arduinos serial port with a baudrate of 115200.
+As soon as the CosmicPi is connected you can open the software of your choice for monitoring serial data. Open the Arduinos serial port with a baudrate of 19200.
 This firmware is designed to be a plug and play firmware. 
 It will only send data. It will not accept inputs. What data is sent is defined [here](https://github.com/CosmicPi/cosmicpi-rpi_V1.5/blob/master/documentation/CosmicPi_V15_serial_comm.txt).
 
