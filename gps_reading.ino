@@ -34,7 +34,12 @@ void GpsSetup() {
 #define NORMAL    "$PMTK220,1000*1F"          // PMTK_SET_NMEA_UPDATE_1HZ
 // disables updates for the antenna status (only Adafruit ultimate GPS?)
 #define NOANTENNA "$PGCMD,33,0*6D"          // PGCMD_NOAN
-
+delay(5000); //added delay to give GPS time to boot.
+  Serial1.println(NOANTENNA);
+  Serial1.println(GGAZDA);
+  Serial1.println(NORMAL);
+  Serial1.println(FMWVERS);
+  delay(10000); //wait a bit longer and repeat just in case it hasn't booted
   Serial1.println(NOANTENNA);
   Serial1.println(GGAZDA);
   Serial1.println(NORMAL);
