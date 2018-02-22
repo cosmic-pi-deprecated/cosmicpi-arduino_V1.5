@@ -312,6 +312,9 @@ void setup() {
     pinMode(EVT_PIN, OUTPUT);       // Pin for the cosmic ray event 
     pinMode(PPS_PIN, OUTPUT);       // Pin for the PPS (LED pin)
   }
+  if (leds_on) {
+    digitalWrite(PPS_PIN, HIGH);   // Turn on led
+  }
 
   TimersStart();  // Start timers
   //target_mills = millis() + 1010; // backup PPS
@@ -330,9 +333,7 @@ void setup() {
   // start the sensors
   sensors = Sensors(aSer);
 
-  if (leds_on) {
-    digitalWrite(PPS_PIN, HIGH);   // Turn on led
-  }
+
 
   // initilize the sensors
   if(!sensors.init()){
