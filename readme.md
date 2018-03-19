@@ -31,7 +31,8 @@ For regular users of the CosmicPi V1.5 this should be taken care of automaticall
 For everybody interested in looking into developing this oneself:
 1.	Download the most recent Arduino IDE: https://www.arduino.cc/en/main/software
 2. 	Install the SAM core: https://www.arduino.cc/en/Guide/Cores
-3. 	Clone this repository: `git clone https://github.com/CosmicPi/cosmicpi-rpi_V1.5.git`
+3. 	Clone this repository: `git clone https://github.com/CosmicPi/cosmicpi-arduino_V1.5.git`
+(note you can also download the .zip file from the menu above to the right, expand and remember to re-name the directory so cosmpicpi-arduino_v1.5 otherwise Arduino will give you errors)
 4.	Open the file `cosmicpi-arduino_V1.5.ino` with the Arduino IDE
 5.	Connect your CosmicPi to your computer via the USB **Programming** port
 6. 	Select the newly appearing port in the Arduino IDE (Tools -> Port)
