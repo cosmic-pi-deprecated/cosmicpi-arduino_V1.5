@@ -1,6 +1,7 @@
 # CosmicPi V1.5 Arduino DUE software
 # NB These files don't compile correctly anymore with the current Arduino IDE + DUE library extensions.
-# If you have a Cosmic Pi V1.5 it's no longer recommended to try reprogramming it!
+# If you have a Cosmic Pi V1.5 it's no longer recommended to try reprogramming it this way!
+If you did accidentally wipe your device, check out https://github.com/CosmicPi/cosmicpi-arduino-raspberry for a binary to reprogram it. 
 
 This is the Arduino DUE software running on the CosmicPi V1.5.
 This software is designed to work in a plug and play fashion, no interaction is required.
